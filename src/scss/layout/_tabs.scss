@@ -1,0 +1,20 @@
+//##################################################
+//################### TABS #######################
+//##################################################
+
+.tabs {
+    @include grid (3, $separacion2);
+    button {
+        padding: 1rem 0;
+        font-size: 1.4rem;
+        font-weight: $bold;
+        text-transform: uppercase;
+        background-color: $blanco;
+        outline: none;
+        border: none;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}

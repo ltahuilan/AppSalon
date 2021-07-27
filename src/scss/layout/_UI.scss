@@ -1,0 +1,41 @@
+//##################################################
+//###################### UI ########################
+//##################################################
+
+body {
+    background-color: $negro;
+}
+
+.contenedor-peluqueria {
+    
+    
+    @include tablet {
+        height: 100vh;         
+        @include grid(2, $separacion2);
+    }
+
+    .imagen {
+        background-image: url('../img/1.webp');
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 30rem;
+        @include tablet {
+            height: auto;
+        }
+    }
+
+    .app {
+        width: 95%;
+        margin: 0 auto;
+        padding: $separacion2;
+
+        .seccion {
+            display: none;
+            margin-top: 3rem;
+            &:first-of-type {
+                display: block;
+            }
+        }
+    }
+}
