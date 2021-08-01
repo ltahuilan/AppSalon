@@ -33,7 +33,11 @@ body {
         .seccion {
             display: none;
             margin-top: 3rem;
-            &:first-of-type {
+            // &:first-of-type {
+            //     display: block;
+            // }
+
+            &.mostrar-seccion {
                 display: block;
             }
         }

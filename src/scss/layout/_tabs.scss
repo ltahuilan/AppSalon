@@ -13,6 +13,11 @@
         outline: none;
         border: none;
 
+        &.activo {
+            background-color: $azul;
+            color: $blanco;
+        }
+
         &:hover {
             cursor: pointer;
         }

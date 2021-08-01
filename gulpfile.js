@@ -71,6 +71,7 @@ function watchFiles () {
     watch(paths.js, javascript);
 }
 
-
-exports.default = parallel(css, javascript, imagenes, versionWebp, watchFiles);
+exports.imagenes = imagenes;
+exports.versionWebp = versionWebp;
+exports.default = parallel(css, javascript, watchFiles);
 

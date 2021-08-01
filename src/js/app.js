@@ -1,11 +1,58 @@
+//varibales globales
+let pagina = 1;
+
 document.addEventListener('DOMContentLoaded', function () {
 
-    app();
+    startApp();
 });
 
-function app () {
+
+function startApp () {
     getDatos();
+
+    //Resalta el DIV actual según el tab al que se presiona
+    mostrarSeccion();
+
+    //Oculta o muestra una seccion según e tab al que se presiona
+    cambiarSeccion();
+
 };
+
+function mostrarSeccion() {
+
+    /**agrega .mostrar-seccion al DIV establecido por default de acurdo a variable global */
+    const seccion = document.querySelector(`#paso-${pagina}`);
+    seccion.classList.add('mostrar-seccion');
+
+    /**agrega .activo al boton del tab actual */
+    const tab = document.querySelector(`[data-pagina="${pagina}"]`);
+    tab.classList.add('activo');
+}
+
+function cambiarSeccion () {
+    const enlaces = document.querySelectorAll('.tabs button');
+
+    enlaces.forEach( enlace => {
+        enlace.addEventListener('click', event => {
+            const pagina = parseInt(event.target.dataset.pagina);
+
+            /**elimina mostrar-seccion del DIV previo agregado en la funcion mostrarSeccion()*/
+            document.querySelector('.mostrar-seccion').classList.remove('mostrar-seccion');
+
+            /**agrega .mostrar-seccion al DIV en funcion del boton a que se hizo click */
+            const seccion = document.querySelector(`#paso-${pagina}`);
+            seccion.classList.add('mostrar-seccion');
+
+            /**elimina .activo del tab previo */
+            document.querySelector('.activo').classList.remove('activo');
+
+            /**agrega .activo al tab seleccionado */
+            document.querySelector(`[data-pagina="${pagina}"]`).classList.add('activo');
+            
+        })
+    })
+};
+
 
 async function getDatos () {
 
@@ -59,7 +106,7 @@ async function getDatos () {
 
 };
 
-function seleccionaServicio(e) {
+function seleccionaServicio(e) {    /**funcion llamada desde getDatos() */
 
     let elemento;
     /**forzar que el elemento seleccionado sea un DIV */
