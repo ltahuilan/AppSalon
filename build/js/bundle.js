@@ -1,85 +1,92 @@
-
-//############ ASYNC / AWAIT ###############
-
 document.addEventListener('DOMContentLoaded', function () {
 
-    console.log('############ ASYNC / AWAIT ###############')
-    consultaDatos();
-
+    app();
 });
 
-async function consultaDatos (){
-    const file = '../../src/js/empleados.json';
+function app () {
+    getDatos();
+};
 
-    //fecth utilizando promises
-    // fetch(file)
-    //     .then( consulta => {
-    //         return consulta.json(); //se aplica el metodo json() para tratar los datos consultados
-    //     })
-    //     .then( datos => {
-    //         console.log(datos);
-    //         //Destructuring
-    //         const {empleados} = datos;
-    //         empleados.forEach( empleado => {
+async function getDatos () {
 
-    //             console.log(empleado.id);
-    //             console.log(empleado.nombre);
-    //             console.log(empleado.puesto);
+    try {
 
-    //         });
+        const file = '../../servicios.json';
+        const resultado = await fetch(file);
+        const datos = await resultado.json();
 
-    //     })
+        const {servicios} = datos; //Object Destructurion
 
+        //construyendo el HTML
+        servicios.forEach( function (servicio) {
 
-    //fetch utilizando async / await
+            //Destructuring
+            const { id, nombre, precio } = servicio  // const id = servicio.id 
 
-    const consulta = await fetch(file);
-    const datos = await consulta.json();
+            //DOM Scripting
+            //crando HTML nombre servicio
+            const nombreServicio = document.createElement('P');
+            nombreServicio.textContent = nombre;
+            nombreServicio.classList.add('nombre-servicio');
 
-    const {empleados} = datos;
+            //creando HTML precio servicio
+            const precioServicio = document.createElement('p');
+            precioServicio.textContent = `$ ${precio}.00`;
+            precioServicio.classList.add('precio-servicio');
 
-    empleados.forEach( function (empleado){
-        console.log(empleado.id);
-        console.log(empleado.nombre);
-        console.log(empleado.puesto);
+            //creando HTML contenedor servicio
+            const contenedorServicio = document.createElement('DIV');
+            contenedorServicio.classList.add('servicio');
+            contenedorServicio.dataset.idServicio = id; //atributo personalizado para seleccionar enelemntos
+            
+            //inyectando parrafos en condenedor DIV
+            contenedorServicio.appendChild(nombreServicio);
+            contenedorServicio.appendChild(precioServicio);
 
-    });
-}
+            //seleccionar servicio (evento)
+            contenedorServicio.onclick = seleccionaServicio;
 
+            //inyectando en el HTML
+            document.querySelector('#servicios').appendChild(contenedorServicio);
 
-//########### Object Destructuring ###########
-
-//objeto
-const persona = {
-    nombre: 'Luis',
-    apellido: 'Tahuilán',
-    edad: 36,
-    gustos: {
-        musica: {
-            rock: ['Rolling Stones, Led Zeppelin'],
-            espanyol: 'José José'
-        },
-        hoby: 'programacion'
+            // console.log(contenedorServicio);
+            
+        });
+        
+    } catch (error) {
+        console.log(error)
     }
-}
 
-//acceso a propiedades de objetos, forma previa
-const nombrePersona = persona.nombre;
-const apellidoPersona = persona.apellido;
-const gustosPersona = persona.gustos;
+};
 
-// console.log(gustosPersona);
+function seleccionaServicio(e) {
 
-//Object Destructuring
+    let elemento;
+    /**forzar que el elemento seleccionado sea un DIV */
 
-const {nombre, apellido, edad, gustos: {musica: {rock, espanyol}, hoby}} = persona;
+    /**devuelven el nombre de la entiqueta:  "nodeName", "tagname".
+     * estan dentro de localNameexplicitOriginalTarget */
 
-console.log(`
-    Nombre: ${nombre}
-    Apellido: ${apellido}
-    Edad: ${edad}
-    Gustos Musicales: ${rock}, ${espanyol}
-    Otros gustos: ${hoby}
-`);
+    if (e.target.nodeName == 'P') {
+        elemento = e.target.parentElement;
+    }else {
+        elemento = e.target;
+    }
+
+    /**agregar / quitar la clase 'seleccionado'
+     * NOTA:
+     * se peude hacer utilizando el metodo '.toggle':
+     * 
+     * elemento.classList.toggle('seleccionado');
+     */
+
+    if (elemento.classList.contains('seleccionado')) {
+        elemento.classList.remove('seleccionado');
+    }else {
+        elemento.classList.add('seleccionado');
+    }
+
+    console.log(elemento.dataset.idServicio);
+};
 
 //# sourceMappingURL=bundle.js.map
