@@ -1,0 +1,43 @@
+//##################################################
+//################# FORMULARIO  ####################
+//##################################################
+
+.formulario {
+    margin-top: 3rem;
+    width: 100%;
+
+    .formulario__grupo {
+
+        margin-bottom: 2rem;
+
+        display: flex;
+        align-items: center;
+
+        label {
+            flex: 0 0 10rem;
+            color: $blanco;
+            margin-bottom: .5rem;
+            font-size: 2rem;
+        }
+
+        input {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            outline: none;
+            border-radius: 1rem;
+        }
+    }
+}
+
+.alerta {
+    color: $blanco;
+    padding: 1rem;
+    margin: 5rem;
+    border-radius: 5rem;
+    text-align: center;
+
+    &.error {
+        background-color: $rojo;
+    }
+}

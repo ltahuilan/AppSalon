@@ -21,7 +21,7 @@ body {
         background-size: cover;
         height: 30rem;
         @include tablet {
-            height: auto;
+            height: 1024px;
         }
     }
 
@@ -37,9 +37,13 @@ body {
             //     display: block;
             // }
 
-            &.mostrar-seccion {
-                display: block;
-            }
+            // &.mostrar-seccion {
+            //     display: block;
+            // }
+        }
+
+        .mostrar-seccion {
+            display: block;
         }
     }
 }

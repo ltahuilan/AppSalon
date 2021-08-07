@@ -1,6 +1,13 @@
 //varibales globales
 let pagina = 1;
 
+const cita = {
+    nombre: '',
+    fecha: '',
+    hora: '',
+    servicios : []
+}
+
 document.addEventListener('DOMContentLoaded', function () {
 
     startApp();
@@ -16,17 +23,49 @@ function startApp () {
     //Oculta o muestra una seccion según e tab al que se presiona
     cambiarSeccion();
 
+    //pagina anterior
+    paginaAnterior();
+
+    //pagina siguiente
+    paginaSiguiente();
+
+
+    botonesPaginador();
+
+    //validar servicios
+    validarFormulario();
+
+    //Asignar nombre cita al objeto
+    nombreCita();
+
 };
 
-function mostrarSeccion() {
+/**Muestra la seccion actual basado en pagina establecida como inicial */
+function mostrarSeccion () {
 
-    /**agrega .mostrar-seccion al DIV establecido por default de acurdo a variable global */
-    const seccion = document.querySelector(`#paso-${pagina}`);
-    seccion.classList.add('mostrar-seccion');
+    /**evalua ssi algun DIV contiene la clase .mostrar-seccion,
+     * si devuelve true elimiina la clase*/
+    const seccionPrevia = document.querySelector('.mostrar-seccion');
+    if (seccionPrevia) {
+        seccionPrevia.classList.remove('mostrar-seccion');
+    }
+
+    /**agrega la clase .mostrar-seccion de acuerdo a variable global */
+    const seccionActual = document.querySelector(`#paso-${pagina}`);
+    seccionActual.classList.add('mostrar-seccion');
+
+
+    /**evalua si algún link hijo de 'tab' contiene la clase .activo
+     * si devuelve 'true' elimina la clase
+     */
+    const tabPrevio = document.querySelector('.tabs .activo');
+    if (tabPrevio) {
+        tabPrevio.classList.remove('activo');
+    }
 
     /**agrega .activo al boton del tab actual */
-    const tab = document.querySelector(`[data-pagina="${pagina}"]`);
-    tab.classList.add('activo');
+    const tabActual = document.querySelector(`[data-pagina="${pagina}"]`);
+    tabActual.classList.add('activo');
 }
 
 function cambiarSeccion () {
@@ -34,20 +73,11 @@ function cambiarSeccion () {
 
     enlaces.forEach( enlace => {
         enlace.addEventListener('click', event => {
-            const pagina = parseInt(event.target.dataset.pagina);
+            event.preventDefault();
+            pagina = parseInt(event.target.dataset.pagina);
 
-            /**elimina mostrar-seccion del DIV previo agregado en la funcion mostrarSeccion()*/
-            document.querySelector('.mostrar-seccion').classList.remove('mostrar-seccion');
-
-            /**agrega .mostrar-seccion al DIV en funcion del boton a que se hizo click */
-            const seccion = document.querySelector(`#paso-${pagina}`);
-            seccion.classList.add('mostrar-seccion');
-
-            /**elimina .activo del tab previo */
-            document.querySelector('.activo').classList.remove('activo');
-
-            /**agrega .activo al tab seleccionado */
-            document.querySelector(`[data-pagina="${pagina}"]`).classList.add('activo');
+            mostrarSeccion();
+            botonesPaginador();
             
         })
     })
@@ -112,28 +142,204 @@ function seleccionaServicio(e) {    /**funcion llamada desde getDatos() */
     /**forzar que el elemento seleccionado sea un DIV */
 
     /**devuelven el nombre de la entiqueta:  "nodeName", "tagname".
-     * estan dentro de localNameexplicitOriginalTarget */
+     * estan dentro de localNameExplicitOriginalTarget */
 
     if (e.target.nodeName == 'P') {
-        elemento = e.target.parentElement;
+        elemento = e.target.parentElement; //devuelve DIV el ancestro de 'P'
     }else {
-        elemento = e.target;
+        elemento = e.target; //devuelve DIV
     }
 
     /**agregar / quitar la clase 'seleccionado'
-     * NOTA:
-     * se peude hacer utilizando el metodo '.toggle':
-     * 
-     * elemento.classList.toggle('seleccionado');
+     * NOTA: se peude hacer utilizando el metodo '.toggle': elemento.classList.toggle('seleccionado');
      */
 
     if (elemento.classList.contains('seleccionado')) {
         elemento.classList.remove('seleccionado');
+
+        //eliminando servicio
+        const id = parseInt(elemento.dataset.idServicio);
+
+        //se pasa el id como argumento
+        eliminaServicio(id);
     }else {
         elemento.classList.add('seleccionado');
+        
+        //creando objeto de servicio
+        const servicioObj = {
+            id: parseInt(elemento.dataset.idServicio),
+            nombre: elemento.firstElementChild.textContent,
+            fecha: elemento.firstElementChild.nextElementSibling.textContent,
+            hora: ''
+        }
+        // console.log(servicioObj);
+        agregaServicio(servicioObj);
     }
+}
 
-    console.log(elemento.dataset.idServicio);
+//Agrega servicio
+function agregaServicio (servicioObj) {
+
+    //destructuring
+    const {servicios} = cita;
+
+    /**crea una copia del del arreglo de servicios utilizando el operador tres puntos (...)
+     * agrega al arreglo el nuevo objeto serviciosObj pasado como parámetro desde seleccionaServicio()
+     */
+    cita.servicios = [...servicios, servicioObj];
+
+    /**SIN OPERADOR PUNTO 
+     * 1) crea copia de arreglo servicios
+     * 2) agrega objeto al arreglo con metodo push()
+     * 3) se asigna el arreglo modificado al arreglo global
+    */
+    // const serviciosCpy = servicios;
+    // serviciosCpy.push(servicioObj);
+    // cita.servicios = serviciosCpy;
+
+    // console.log(`Agregando servicio...`);
+    // console.log(cita.servicios);
+}
+
+
+function eliminaServicio (id) {
+
+    //destructuring
+    const {servicios} = cita;
+
+    /**Almacena en cita.servicios todos los servicios que sean diferentes del servicio con
+     * el id pasado como argumento desde seleccionaServicio()
+     */
+    cita.servicios = servicios.filter(function (servicio) {
+        return servicio.id !== id;
+    });
+
+    // console.log(cita.servicios);
+}
+
+
+function nombreCita() {
+    const nombre = document.querySelector('#nombre');
+    nombre.addEventListener('input', event => {
+        
+        const nombreTexto = event.target.value.trim(); //metodo trim elimina espaciosn al inico y final
+        
+        //comprobando contenido del input
+        if (nombreTexto == '' || nombreTexto.length < 3 ) {
+            mostrarAlerta ('El nombre esta vacío o no es correcto', 'error');
+        }else {
+
+            //comprobar si existe un alerta activa
+            const alerta = document.querySelector('.alerta');
+            if (alerta) {
+                alerta.remove();
+            }
+
+            cita.nombre = nombreTexto;
+        }
+        // console.log(cita);
+    });
+
 };
 
+function fechaCita () {
+
+};
+
+
+function horaCita () {
+
+};
+
+function paginaAnterior () {
+    const anterior = document.querySelector('#anterior');
+    anterior.addEventListener('click', () => {
+        pagina --;
+        console.log(pagina);
+        botonesPaginador();
+    })
+}
+
+function paginaSiguiente () {
+    const siguiente = document.querySelector('#siguiente');
+    siguiente.addEventListener('click', () => {
+        pagina++;
+        console.log(pagina);
+        botonesPaginador();
+    })
+
+}
+
+/**Evalua el id de la seccion mostrada en pantalla
+ * agrega/elimina la clase .oculto para ocultar o mostrar
+ * la sección
+*/
+
+function botonesPaginador() {
+    const btnAnterior = document.querySelector('#anterior');
+    const btnSiguiente = document.querySelector('#siguiente');
+
+    if (pagina === 1) {
+        btnAnterior.classList.add('oculto');
+        btnSiguiente.classList.remove('oculto');
+    }else if (pagina === 3) {
+        btnSiguiente.classList.add('oculto');
+        btnAnterior.classList.remove('oculto');
+    }else {
+        btnSiguiente.classList.remove('oculto');
+        btnAnterior.classList.remove('oculto');
+    }
+
+    /**llama a la fuinción mostrarSeccion */
+    mostrarSeccion();
+}
+
+
+function validarFormulario() {
+
+    //destructuring
+    const {nombre, fecha, hora, servicios} = cita;
+    
+    //Selector de sección resumen
+    const resumen = document.querySelector('.resumen');
+    
+    //validación de objeto
+    if (Object.values(cita).includes('')) {
+
+        const citaVacia = document.createElement('P');
+        citaVacia.textContent = 'Faltan datos en la cita, verificar Nombre, Fecha, Hora, Servicios';
+        citaVacia.classList.add('invalidar-cita');
+        resumen.appendChild(citaVacia);
+
+    }else {
+        console.log(Object.values(cita));
+    }
+}
+
+
+function mostrarAlerta (mensaje, error) {
+
+    //verificar si existe una alerta activa
+    const alertaPrevia = document.querySelector('.alerta');
+    if (alertaPrevia) {
+        alertaPrevia.remove();
+    }
+
+    const alerta = document.createElement('P');
+    alerta.textContent = mensaje;
+    alerta.classList.add('alerta');
+
+
+    if (error == 'error') {
+        alerta.classList.add('error');
+    }
+    
+    //inyectar en HTML
+    const formulario = document.querySelector('.formulario');
+    formulario.appendChild(alerta);
+
+    setTimeout(() => {
+        alerta.remove();
+    }, 3500);
+}
 //# sourceMappingURL=bundle.js.map

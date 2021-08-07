@@ -29,9 +29,31 @@
             </div>
             <div id="paso-2" class="seccion">
                 <h2>Tus datos</h2>
+                <p class="text-center">Introduce los datos y fecha de la cita</p>
+
+                <form class="formulario">
+                    <div class="formulario__grupo">
+                        <label for="nombre" >Nombre: </label>
+                        <input type="text" placeholder="Introduce nombre" class="nombre" id="nombre">
+                    </div>
+                    <div class="formulario__grupo">
+                        <label for="fecha" >Fecha: </label>
+                        <input type="date" class="fecha" id="fecha">
+                    </div>
+                    <div class="formulario__grupo">
+                        <label for="hora" >Hora: </label>
+                        <input type="time" class="hora" id="hora">
+                    </div>
+                </form>
+                
             </div>
-            <div id="paso-3" class="seccion">
+            <div id="paso-3" class="seccion resumen">
                 <h2>Citas</h2>
+            </div>
+
+            <div class="paginacion">
+                <button id="anterior">&laquo;Anterior</button>
+                <button id="siguiente">Siguiente&raquo;</button>
             </div>
         </div>
     </div>
