@@ -7,3 +7,46 @@
     text-transform: uppercase;
     color: $rojo;
 }
+
+.contenedor-cita {
+    span {
+        color: $azul;
+        font-weight: $bold;
+    }
+}
+
+.resumen-servicio {
+    
+    h3 {
+        margin: 3rem 0;
+    }
+
+    .contenedor-servicio {
+        padding: 1rem;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid #555555;    
+    
+        p {
+            margin: 0;
+        }    
+    
+        .servicio {
+            margin-bottom: 1rem;
+        }
+    
+        .precio {
+            font-weight: $bold;
+        }
+    }
+}
+
+.total-pagar {
+    margin-top: 5rem;
+    text-align: right;
+    span {
+        color: $azul;
+        font-weight: $bold;
+    }
+}
+
+
